@@ -1,0 +1,471 @@
+#include <iostream>
+#include <string>
+#include <cstring>
+#include <string.h>
+#include <cstdlib>
+#include <sstream>
+#include <cmath>
+
+using namespace std;
+//class Construction
+class matrix
+{
+public:
+	//decleration of Class data
+	string string1, matrix_numbers;
+	float matrix1[100][100];
+	int no_of_rows, no_of_column;
+	int row = 1;
+	int	column = 1;
+	char abc[27];
+	char ABC[27];
+	int J = 0, count = 0;
+	int rn = 0, cn = 0,first_row_length=0,other_row_length=0;
+	string result;
+
+	//Class functions
+public:
+	void error()
+	{
+		cout << "ERROR";
+		exit(0);
+	}
+
+	void set_matrix(string &str1)
+	{
+		//set the matrix in the class
+
+		//getline(cin, str1);
+		string1 = str1;
+
+		//errors in input format
+		if (string1[0] != '[' || string1[string1.length() - 1] != ']')
+		{
+			error();
+		}
+
+		if (string1[1] == ' ' || string1[string1.length() - 2] == ' ')
+		{
+			error();
+		}
+		for (int i = 0; i <(string1.length()-1) ; i++)
+		{
+			if (string1[i] == ' ')
+			{
+				if (string1[i + 1] == ' ')
+				{
+					error();
+				}
+			}
+		}
+		//errors in input content
+		//storing alphabets in arrays
+		for (int p = 0; p < 27; p++)
+		{
+			abc[p] = 'a' + p;
+			ABC[p] = 'A' + p;
+		}
+
+		//comparing the string to alphabets
+		for (int i = 0; i < (string1.length() - 1); i++)
+		{
+			for (int j = 0; j < 26; j++)
+			{
+				if
+					(
+						string1[i] == abc[j]
+					)
+				{
+					error();
+				}
+			}
+		}
+		for (int i = 0; i < (string1.length() - 1); i++)
+		{
+			for (int j = 0; j < 26; j++)
+			{
+				if (string1[i] == ABC[j])
+				{
+					error();
+				}
+			}
+		}
+		//segmentation of the string
+
+		//how the program will konw that the row is done
+		for (int i = 0; i < (string1.length() - 1); i++)
+		{
+			if (string1[i] == ';')
+			{
+				no_of_rows++;
+				while (no_of_rows == 2 && J < i)
+				{
+					if (string1[J] == ' ')
+					{
+						no_of_column++;
+					}
+					J++;
+				}
+			}
+		}
+
+		//coverting to a float 
+		matrix_numbers = string1.substr(1, string1.length() - 1);
+	    matrix1[0][0] = atof(matrix_numbers.c_str());
+
+		//Counting size of matrix and storing it
+		for (int i = 1; i < (string1.length()-1); i++)
+		{
+			if (string1[i]== ' ')
+			{
+				matrix_numbers = string1.substr(i + 1, string1.length() - i);
+				cn++;
+				if (rn==0)
+				{
+					first_row_length = 1 + cn;
+				}
+				if (rn != 0)
+				{
+					other_row_length = 1 + cn;
+				}
+				matrix1[rn][cn]= atof(matrix_numbers.c_str());
+				continue;
+			}
+			else if (string1[i] == ';')
+			{
+				cn = 0;
+				matrix_numbers = string1.substr(i + 1, string1.length() - i);
+				if (rn > 0)
+				{
+					if (other_row_length != first_row_length)
+					{
+						error();
+					}
+				}
+				rn++;
+				matrix1[rn][cn] = atof(matrix_numbers.c_str());
+				continue;
+			}	
+		}
+	}
+	//show the matrix value
+	string get_matrix()
+	{
+		return string1;
+	}
+
+	//addition function
+	void add_matrecies(matrix mat)
+	{	
+		for (int i = 0; i <=rn  ; i++)
+		{
+			for (int j = 0; j <=cn ; j++)
+			{
+				this->matrix1[i][j] = this->matrix1[i][j] + mat.matrix1[i][j];
+				
+			}
+		}
+	}
+
+	//addition result in the same form of input
+	void add_matrecies_res()
+	{
+		cout << '[';
+		for (int i = 0; i <= rn; i++)
+		{
+			for (int j = 0; j <= cn; j++)
+			{
+				cout<<("%.2f", this->matrix1[i][j]);
+				if (j < cn)
+				{
+					cout << ' ';
+				}
+			}
+			if (i < rn)
+			{
+				cout << ';';
+			}
+		}
+		cout << ']';
+	}
+
+	//subtraction function
+	void subtract_matrecies(matrix mat)
+	{
+		for (int i = 0; i <= rn; i++)
+		{
+			for (int j = 0; j <= cn; j++)
+			{
+				this->matrix1[i][j] = this->matrix1[i][j] - mat.matrix1[i][j];
+
+			}
+		}
+	}
+
+	//subtraction result in the same form of input
+	void subtract_matrecies_res()
+	{
+		cout << '[';
+		for (int i = 0; i <= rn; i++)
+		{
+			for (int j = 0; j <= cn; j++)
+			{
+				printf("%.2f", this->matrix1[i][j]);
+				if (j < cn)
+				{
+					cout << ' ';
+				}
+			}
+			if (i < rn)
+			{
+				cout << ';';
+			}
+		}
+		cout << ']';
+	}	
+
+	//transpose function and result in the same form of input
+	void transpose_matrecies_res()
+	{
+		cout << '[';
+		for (int i = 0; i <= rn; i++)
+		{
+			for (int j = 0; j <= cn; j++)
+			{
+				printf("%.2f", this->matrix1[j][i]);
+				if (j < rn)
+				{
+					cout << ' ';
+				}
+			}
+			if (i < cn)
+			{
+				cout << ';';
+			}
+		}
+		cout << ']';
+	}
+	//multiplication function
+	void multiply_matrecies(matrix mat1)
+	{
+		//[1 2 3;4 5 6;7 8 9]
+		//[10 11 12;13 14 15;16 17 18]
+		for (int i = 0; i <= rn; i++)
+		{
+			for (int j = 0; j <= cn; j++)
+			{
+				this->matrix1[i][j] = this->matrix1[i][j] * mat1.matrix1[i][j];
+			}
+		}
+	}
+
+	//multiplication result in the same form of input
+	void multiply_matrecies_res()
+	{
+		cout << '[';
+		for (int i = 0; i <= rn; i++)
+		{
+			for (int j = 0; j <= cn; j++)
+			{
+				printf("%.2f", this->matrix1[i][j]);
+				if (j < rn)
+				{
+					cout << ' ';
+				}
+			}
+			if (i < cn)
+			{
+				cout << ';';
+			}
+		}
+		cout << ']';
+	}
+
+	//Division function
+	void divide_matrecies(matrix mat)
+	{
+		for (int i = 0; i <= rn; i++)
+		{
+			for (int j = 0; j <= cn; j++)
+			{
+				this->matrix1[i][j] = this->matrix1[i][j] / mat.matrix1[i][j];
+			}
+		}
+	}
+	//division result in the same form of input
+	void divide_matrecies_res()
+	{
+		cout << '[';
+		for (int i = 0; i <= rn; i++)
+		{
+			for (int j = 0; j <= cn; j++)
+			{
+				printf("%.2f", this->matrix1[i][j]);
+				if (j < cn)
+				{
+					cout << ' ';
+				}
+			}
+			if (i < rn)
+			{
+				cout << ';';
+			}
+		}
+		cout << ']';
+	}
+};
+//end of class
+
+//functions decleration (protoypes)
+void error2();
+
+//main program
+int main()
+{
+
+	//decleration of variables
+		int x, y, a, b;
+		matrix mat1, mat2, add_result;
+		string matrecies1, matrecies2;
+		string oper;
+		char transpose_choice, division_choice;
+		string size1, size2;
+		string program_repetation;
+	
+	cout << "The Following Program is a Simple Matrix Calculator.\n" << "It Can Do Add,Subtraction,Multiplication,Transpose and Division.\n";
+	cout << "You Have to Enter the Matrix in The Form of [10 2 3;-5 0 4;16 1 8]\n" << "Note:End each row Should end with semicolon ;\n" << endl;
+	do
+	{
+		//interacting with user
+		
+		cout << "Enter the Size of the matrix in form Rows*Columns\n\n";
+		getline(cin,size1);
+		cout << "Enter The Matrix\n\n"<<"A = ";
+		getline(cin, matrecies1);
+		cout << endl;
+		mat1.set_matrix(matrecies1);
+		cout << "The First Matrix Is : \n\n" << "A = " << mat1.get_matrix() << endl << endl;
+		cout << "Enter the Size of matrix in form Rows*Columns\n";
+		getline(cin, size1);
+		cout << "Enter The Matrix\n\n"<<"B = ";
+		getline(cin, matrecies2);
+		cout << endl;
+		mat2.set_matrix(matrecies2);
+		cout << "The Second Matrix Is\n\n" << "B = " << mat2.get_matrix() << endl << endl;
+
+		//operation Choice
+		cout << "Now Enter:" << endl << "+ for Addition" << endl << "- for Subtraction" << endl << "* to Multiplication" << endl << "^ for Transpose" << endl << "/ for Dividion" << endl << endl;
+		cout << "Enter the Operator : ";
+		getline(cin, oper);
+
+		//operations and Operator Error
+
+		//addition
+		if (oper[0] == '+')
+		{
+			
+			cout << "\nNote: For Addition the two Matrecies Must be the Same Size.\n\n";
+			cout << "The Addition Result is :\n \n";
+			mat1.add_matrecies(mat2);
+			cout << "C = ";
+			mat1.add_matrecies_res();
+		}
+
+		//subtraction
+		else if (oper[0] == '-')
+		{
+			//size ensuring
+			cout << "\nNote: For Subtraction the two Matrecies Must be the Same Size.\n\n";	
+			cout << "The Subtraction Result is :\n \n";
+			mat1.subtract_matrecies(mat2);
+			cout << "C = ";
+			mat1.subtract_matrecies_res();
+		}
+
+		//multiblication
+		else if (oper[0] == '*')
+		{
+			cout << "The Multiblication Result is :\n \n";
+			mat1.multiply_matrecies(mat2);
+			cout << "C = ";
+			mat1.multiply_matrecies_res();
+		}
+
+		//transpose
+		else if (oper[0] == '^')
+		{
+			//interacting
+			cout << "\nNote: For Transpose Matrix Should Be Square matrix.\n";
+			cout << "\nWhich Matrix You Want its Transpose A or B? \n";
+			cin >> transpose_choice;
+			cout << endl;
+			if (transpose_choice == 'A')
+			{
+				//square matrix error checking
+				if (size1[0] != size1[2])
+				{
+					error2();
+				}
+				cout << "\nThe Result of A Transpose is : \n\n";
+				cout << "A^ = ";
+				mat1.transpose_matrecies_res();
+				cout << endl;
+			}
+			else if (transpose_choice == 'B')
+			{
+				cout << "The Result of B Transpose is :\n\n";
+				cout << "B^ = ";
+				mat1.transpose_matrecies_res();
+				cout << endl;
+			}
+			else
+			{
+				error2();
+			}
+		}
+
+		//division
+		else if (oper[0] == '/')
+		{
+			cout << "Which matrix you Want to divide by A or B? \n";
+			cin >> division_choice;
+			if (division_choice == 'B')
+			{
+				cout << "\nThe Result of A/B is : \n\n";
+				mat1.divide_matrecies(mat2);
+				cout << "C = ";
+				mat1.divide_matrecies_res();
+				cout << endl;
+			}
+			else if (division_choice == 'A')
+			{
+				cout << "The Result of B/A is :\n\n";
+				mat2.divide_matrecies(mat1);
+				cout << "C = ";
+				mat2.divide_matrecies_res();
+				cout << endl;
+			}
+			else
+			{
+				error2();
+			}
+		}
+
+		//error in operator
+		else
+		{
+			error2();
+		}
+		cout << "\n\nEnter continue to continue,exit to close the program\n";
+		cin >> program_repetation;
+	}
+	while (program_repetation=="continue");
+}
+//end of main
+
+//function defination
+void error2()
+{
+	cout << "ERROR";
+	exit(0);
+}
